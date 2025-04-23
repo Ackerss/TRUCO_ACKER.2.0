@@ -12,38 +12,31 @@ let matchDurationHistory = [];
 let undoState = null;
 let teamNameNos = "Nós";
 let teamNameEles = "Eles";
-let currentTheme = 'dark'; // Padrão inicial
+let currentTheme = 'dark';
 let wakeLock = null;
 
 // --- Constantes Chaves localStorage ---
 const STORAGE_KEYS = {
-    SCORE_NOS: 'truco_scoreNos',
-    SCORE_ELES: 'truco_scoreEles',
-    PREV_SCORE_NOS: 'truco_prevScoreNos',
-    PREV_SCORE_ELES: 'truco_prevScoreEles',
-    IS_INITIAL: 'truco_isInitial',
-    MATCHES_NOS: 'truco_matchesNos',
-    MATCHES_ELES: 'truco_matchesEles',
-    PLAYER_NAMES: 'truco_playerNames',
-    DEALER_INDEX: 'truco_dealerIndex',
-    TEAM_NAME_NOS: 'truco_teamNameNos',
-    TEAM_NAME_ELES: 'truco_teamNameEles',
-    DURATION_HISTORY: 'truco_durationHistory',
+    SCORE_NOS: 'truco_scoreNos', SCORE_ELES: 'truco_scoreEles',
+    PREV_SCORE_NOS: 'truco_prevScoreNos', PREV_SCORE_ELES: 'truco_prevScoreEles',
+    IS_INITIAL: 'truco_isInitial', MATCHES_NOS: 'truco_matchesNos',
+    MATCHES_ELES: 'truco_matchesEles', PLAYER_NAMES: 'truco_playerNames',
+    DEALER_INDEX: 'truco_dealerIndex', TEAM_NAME_NOS: 'truco_teamNameNos',
+    TEAM_NAME_ELES: 'truco_teamNameEles', DURATION_HISTORY: 'truco_durationHistory',
     THEME: 'truco_theme'
 };
 
 // --- Elementos do DOM ---
-// (Obtidos dentro de initializeApp para garantir que o DOM esteja pronto)
 let scoreNosElement, scoreElesElement, prevScoreNosElement, prevScoreElesElement,
     matchWinsNosElement, matchWinsElesElement, dealerNameElement, currentTimerElement,
     durationHistoryListElement, undoButton, teamNameNosElement, teamNameElesElement,
     themeToggleButton, bodyElement, themeMeta;
 
-// --- Funções de Armazenamento Local (localStorage) ---
+// --- Funções de Armazenamento Local ---
 function saveData(key, data) { try { localStorage.setItem(key, JSON.stringify(data)); } catch (e) { console.error("Erro ao salvar:", key, e); } }
 function loadData(key, defaultValue = null) { try { const d = localStorage.getItem(key); return d ? JSON.parse(d) : defaultValue; } catch (e) { console.error("Erro ao carregar:", key, e); return defaultValue; } }
-function saveGameState() { /* Salva todas as variáveis relevantes */ Object.keys(STORAGE_KEYS).forEach(key => { if (key !== STORAGE_KEYS.THEME) { const varName = key.split('_')[1]; if (typeof window[varName] !== 'undefined') saveData(key, window[varName]); } }); }
-function loadGameState() { /* Carrega todas as variáveis relevantes */ scoreNos = loadData(STORAGE_KEYS.SCORE_NOS, 0); scoreEles = loadData(STORAGE_KEYS.SCORE_ELES, 0); prevScoreNos = loadData(STORAGE_KEYS.PREV_SCORE_NOS, 0); prevScoreEles = loadData(STORAGE_KEYS.PREV_SCORE_ELES, 0); isInitialState = loadData(STORAGE_KEYS.IS_INITIAL, true); matchesWonNos = loadData(STORAGE_KEYS.MATCHES_NOS, 0); matchesWonEles = loadData(STORAGE_KEYS.MATCHES_ELES, 0); playerNames = loadData(STORAGE_KEYS.PLAYER_NAMES, []); currentDealerIndex = loadData(STORAGE_KEYS.DEALER_INDEX, 0); teamNameNos = loadData(STORAGE_KEYS.TEAM_NAME_NOS, "Nós"); teamNameEles = loadData(STORAGE_KEYS.TEAM_NAME_ELES, "Eles"); matchDurationHistory = loadData(STORAGE_KEYS.DURATION_HISTORY, []); const savedTheme = loadData(STORAGE_KEYS.THEME); if (savedTheme) { currentTheme = savedTheme; } else { currentTheme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark'; } }
+function saveGameState() { Object.keys(STORAGE_KEYS).forEach(key => { if (key !== STORAGE_KEYS.THEME) { const varName = key.split('_')[1]; const value = window[varName.charAt(0).toLowerCase() + varName.slice(1)]; if (typeof value !== 'undefined') saveData(key, value); } }); }
+function loadGameState() { scoreNos = loadData(STORAGE_KEYS.SCORE_NOS, 0); scoreEles = loadData(STORAGE_KEYS.SCORE_ELES, 0); prevScoreNos = loadData(STORAGE_KEYS.PREV_SCORE_NOS, 0); prevScoreEles = loadData(STORAGE_KEYS.PREV_SCORE_ELES, 0); isInitialState = loadData(STORAGE_KEYS.IS_INITIAL, true); matchesWonNos = loadData(STORAGE_KEYS.MATCHES_NOS, 0); matchesWonEles = loadData(STORAGE_KEYS.MATCHES_ELES, 0); playerNames = loadData(STORAGE_KEYS.PLAYER_NAMES, []); currentDealerIndex = loadData(STORAGE_KEYS.DEALER_INDEX, 0); teamNameNos = loadData(STORAGE_KEYS.TEAM_NAME_NOS, "Nós"); teamNameEles = loadData(STORAGE_KEYS.TEAM_NAME_ELES, "Eles"); matchDurationHistory = loadData(STORAGE_KEYS.DURATION_HISTORY, []); const savedTheme = loadData(STORAGE_KEYS.THEME); currentTheme = savedTheme ? savedTheme : ((window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark'); }
 function clearSavedGame() { Object.values(STORAGE_KEYS).forEach(key => { if (key !== STORAGE_KEYS.THEME) localStorage.removeItem(key); }); }
 
 // --- Funções de Display ---
@@ -76,23 +69,37 @@ function speakText(text, cancelPrevious = true) { if ('speechSynthesis' in windo
  // --- Função para Avançar o Embaralhador ---
  function advanceDealer(speakAnnounce = false) { if (playerNames.length !== 4) { if(speakAnnounce) alert("Defina os nomes..."); return false; } currentDealerIndex = (currentDealerIndex + 1) % 4; saveData(STORAGE_KEYS.DEALER_INDEX, currentDealerIndex); updateDealerDisplay(); if (speakAnnounce) speakText(`Embaralhador: ${playerNames[currentDealerIndex]}`, true); return true; }
 
-// --- Lógica Principal de Pontuação ---
+// --- Lógica Principal de Pontuação (AJUSTADA) ---
 function changeScore(team, amount) {
     let currentScore = (team === 'nos') ? scoreNos : scoreEles; let scoreChanged = false;
-    if (amount > 0 && currentScore < maxScore) scoreChanged = true; else if (amount < 0 && currentScore > 0) scoreChanged = true; if (!scoreChanged) return false;
+    if (amount > 0 && currentScore < maxScore) scoreChanged = true;
+    else if (amount < 0 && currentScore > 0) scoreChanged = true; // Permite -1
+    if (!scoreChanged) return false;
 
-    undoState = { sN: scoreNos, sE: scoreEles, psN: prevScoreNos, psE: prevScoreEles, dI: currentDealerIndex, isI: isInitialState }; // Captura antes
+    // Guarda estado para desfazer ANTES de mudar
+    undoState = { sN: scoreNos, sE: scoreEles, psN: prevScoreNos, psE: prevScoreEles, dI: currentDealerIndex, isI: isInitialState };
+
     prevScoreNos = scoreNos; prevScoreEles = scoreEles; isInitialState = false; let winner = null;
 
+    // Atualiza placar
     if (team === 'nos') { scoreNos += amount; if (scoreNos >= maxScore) { scoreNos = maxScore; winner = 'nos'; } else if (scoreNos < 0) { scoreNos = 0; } }
     else { scoreEles += amount; if (scoreEles >= maxScore) { scoreEles = maxScore; winner = 'eles'; } else if (scoreEles < 0) { scoreEles = 0; } }
 
     updateCurrentGameDisplay();
-    const dealerAdvanced = advanceDealer(false); // Avança dealer silenciosamente
 
-    if (dealerAdvanced && playerNames.length === 4) { // Fala nome do novo dealer APÓS delay
+    // --- ALTERAÇÃO AQUI: Só avança o dealer se pontos foram ADICIONADOS ---
+    let dealerAdvanced = false;
+    if (amount > 0) {
+        dealerAdvanced = advanceDealer(false); // Avança dealer silenciosamente
+    }
+    // --------------------------------------------------------------------
+
+    // Fala nome do novo dealer APÓS delay (se dealer avançou e nomes existem)
+    // Isso só acontecerá agora se amount > 0
+    if (dealerAdvanced && playerNames.length === 4) {
          setTimeout(() => { speakText(`Embaralhador: ${playerNames[currentDealerIndex]}`, true); }, 750);
     }
+
     if (winner) { processMatchEnd(winner); }
 
     saveGameState(); // Salva estado após mudança
@@ -141,7 +148,10 @@ function addEventListeners() {
                 const team = event.target.dataset.team;
                 const amount = parseInt(event.target.dataset.amount, 10);
                 const speak = event.target.dataset.speak;
-                if (changeScore(team, amount) && speak) { speakText(speak); }
+                // Chama changeScore e SÓ FALA O PONTO se changeScore retornar true E houver texto para falar
+                if (changeScore(team, amount) && speak) {
+                    speakText(speak); // Fala o ponto/truco etc.
+                }
             }
         });
     }
@@ -155,7 +165,7 @@ function addEventListeners() {
 
 // --- Inicialização da Aplicação ---
 function initializeApp() {
-    // Obter referências DOM após o carregamento
+    // Obter referências DOM
     scoreNosElement = document.getElementById('score-nos');
     scoreElesElement = document.getElementById('score-eles');
     prevScoreNosElement = document.getElementById('prev-score-nos');
@@ -173,9 +183,7 @@ function initializeApp() {
     themeMeta = document.getElementById('theme-color-meta');
 
     loadGameState(); // Carrega dados salvos
-
-    // Aplica o tema carregado ou detectado
-    setTheme(currentTheme);
+    setTheme(currentTheme); // Aplica tema carregado/detectado
 
     // Atualiza displays
     updateCurrentGameDisplay();
@@ -183,7 +191,7 @@ function initializeApp() {
     updateTeamNameDisplay();
     updateDealerDisplay();
     updateDurationHistoryDisplay();
-    if (undoButton) undoButton.disabled = true;
+    if (undoButton) undoButton.disabled = true; // Desfazer sempre começa desabilitado
 
     addEventListeners(); // Adiciona listeners
 
@@ -191,7 +199,7 @@ function initializeApp() {
     if (playerNames.length !== 4) {
          setTimeout(getPlayerNames, 300);
     } else {
-        resetCurrentTimerDisplay(); // Sempre reseta timer ao carregar página com nomes
+        resetCurrentTimerDisplay(); // Reseta timer ao carregar
         startTimer();
     }
 }
