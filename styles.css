@@ -144,36 +144,13 @@ h1 { color: var(--title-color); margin-top: 0; margin-bottom: 15px; font-size: 1
 h2, h3, h4 { color: var(--text-color-light); font-weight: normal; }
 hr { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; }
 
-/* --- Botões de Configuração no Topo (Ajustado) --- */
-.top-config-buttons {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    flex-direction: column; /* Empilha os botões */
-    align-items: flex-end; /* Alinha à direita */
-    gap: 6px; /* Espaço entre botões */
-}
-#theme-toggle-btn, #sound-toggle-btn {
-    background: var(--section-bg);
-    color: var(--text-color-lighter);
-    border: 1px solid var(--border-color-light);
-    border-radius: 50%;
-    width: 32px; /* Tamanho ligeiramente menor */
-    height: 32px;
-    font-size: 1.1em; /* Ícone menor */
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-    transition: background-color 0.3s, color 0.3s, transform 0.2s;
-    box-shadow: 0 1px 3px var(--shadow-color);
-}
+/* --- Botões de Configuração no Topo --- */
+.top-config-buttons { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+#theme-toggle-btn, #sound-toggle-btn { background: var(--section-bg); color: var(--text-color-lighter); border: 1px solid var(--border-color-light); border-radius: 50%; width: 32px; height: 32px; font-size: 1.1em; cursor: pointer; display: flex; justify-content: center; align-items: center; padding: 0; transition: background-color 0.3s, color 0.3s, transform 0.2s; box-shadow: 0 1px 3px var(--shadow-color); }
 #theme-toggle-btn:hover, #sound-toggle-btn:hover { background-color: var(--section-bg-alt); color: var(--text-color); }
 #theme-toggle-btn:active, #sound-toggle-btn:active { transform: scale(0.95); }
 
-/* --- Cronômetro (Altura Reduzida) --- */
+/* --- Cronômetro --- */
 .timer-section{ padding: 5px 10px; margin-bottom: 15px; background-color: var(--section-bg); border:1px solid var(--border-color-light); border-radius:6px; text-align:center; }
 .timer-section h3{ margin: 2px 0 2px 0; font-size:.8em; color: var(--text-color-lighter); }
 #current-timer-display{ font-size:1.5em; font-weight:700; color: var(--text-color); font-family:'Courier New',Courier,monospace; display:block; margin: 0; padding: 2px 0; }
@@ -186,7 +163,7 @@ hr { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; }
 .match-wins-display .eles{color: var(--accent-eles)}
 .match-wins-display span{display:inline-block;min-width:30px}
 
-/* --- Seção Embaralhador (Altura Reduzida) --- */
+/* --- Seção Embaralhador --- */
 .dealer-section{ padding: 8px 10px; margin-bottom:15px; background-color: var(--section-bg); border:1px solid var(--border-color-light); border-radius:6px}
 .dealer-section h3{margin: 2px 0 3px 0; font-size:1em; color: var(--text-color-lighter);}
 #current-dealer-name{font-size:1.3em;font-weight:700;color: var(--text-color);min-height: 1.3em; line-height: 1.3em; margin: 0 0 5px 0;}
@@ -246,7 +223,7 @@ hr { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; }
 .reset-all-button:hover{ background-color: var(--button-reset-all-hover); }
 .reset-all-button:active{ background-color: var(--button-reset-all-active); }
 
-/* --- Histórico de Duração das Partidas (Movido para o final) --- */
+/* --- Histórico de Duração das Partidas --- */
  .duration-history-section {
      margin-top: 20px; /* Espaço antes do histórico */
      margin-bottom: 20px; /* Espaço antes dos créditos */
@@ -266,11 +243,13 @@ hr { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; }
      align-items: center;
  }
  #duration-history-list li:last-child { border-bottom: none; }
- /* Ícone de Vencedor no Histórico (Troféu) */
+ /* Ícone de Vencedor no Histórico (Troféu com Cor) */
  .winner-icon {
      font-size: 1.1em; /* Tamanho do ícone */
      margin-left: 8px; /* Espaço antes do ícone */
-     font-style: normal; /* Garante que não fique itálico */
+     font-style: normal;
+     display: inline-block; /* Necessário para aplicar cor */
+     filter: grayscale(30%); /* Deixa um pouco menos vibrante */
  }
  .winner-icon.nos { color: var(--accent-nos); }
  .winner-icon.eles { color: var(--accent-eles); }
