@@ -1,6 +1,6 @@
 // Service Worker para funcionalidade offline do Marcador de Truco
 
-// Nome do cache (versão incrementada para forçar atualização após mudanças no app.js/styles.css)
+// Nome do cache (versão incrementada para forçar atualização)
 const CACHE_NAME = 'truco-marker-cache-v1.6';
 
 // Lista de arquivos essenciais para cachear na instalação
