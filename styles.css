@@ -9,7 +9,7 @@
     --text-color: #e0e0e0;
     --text-color-light: #c0c0c0;
     --text-color-lighter: #b0b0b0;
-    --text-color-muted: #ddd;
+    --text-color-muted: #ddd; /* Cor dos créditos */
     --title-color: #ffffff;
     --border-color: #444;
     --border-color-light: #555;
@@ -138,37 +138,30 @@ body.light-theme {
 }
 
 /* --- Estilos Gerais --- */
-body {
-    font-family: sans-serif; display: flex; justify-content: center; align-items: flex-start;
-    min-height: 100vh; background-color: var(--bg-color); color: var(--text-color);
-    margin: 0; padding: 15px; box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease;
-}
-.scoreboard {
-    background-color: var(--scoreboard-bg); padding: 15px 20px; border-radius: 12px;
-    box-shadow: 0 4px 15px var(--shadow-color-darker); text-align: center; width: 100%;
-    max-width: 500px; box-sizing: border-box; border: 1px solid var(--border-color);
-    position: relative; transition: background-color 0.3s ease, border-color 0.3s ease;
-}
+body { font-family: sans-serif; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease; }
+.scoreboard { background-color: var(--scoreboard-bg); padding: 15px 20px; border-radius: 12px; box-shadow: 0 4px 15px var(--shadow-color-darker); text-align: center; width: 100%; max-width: 500px; box-sizing: border-box; border: 1px solid var(--border-color); position: relative; transition: background-color 0.3s ease, border-color 0.3s ease; }
 h1 { color: var(--title-color); margin-top: 0; margin-bottom: 15px; font-size: 1.6em; font-weight: bold; text-shadow: 1px 1px 2px var(--shadow-color-darkest); }
 h2, h3, h4 { color: var(--text-color-light); font-weight: normal; }
 hr { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; }
 
-/* --- Botões de Configuração no Topo --- */
+/* --- Botões de Configuração no Topo (Ajustado) --- */
 .top-config-buttons {
     position: absolute;
     top: 10px;
     right: 10px;
     display: flex;
-    gap: 8px; /* Espaço entre botões */
+    flex-direction: column; /* Empilha os botões */
+    align-items: flex-end; /* Alinha à direita */
+    gap: 6px; /* Espaço entre botões */
 }
 #theme-toggle-btn, #sound-toggle-btn {
     background: var(--section-bg);
     color: var(--text-color-lighter);
     border: 1px solid var(--border-color-light);
     border-radius: 50%;
-    width: 35px;
-    height: 35px;
-    font-size: 1.2em; /* Ajuste o tamanho do ícone se necessário */
+    width: 32px; /* Tamanho ligeiramente menor */
+    height: 32px;
+    font-size: 1.1em; /* Ícone menor */
     cursor: pointer;
     display: flex;
     justify-content: center;
@@ -177,15 +170,10 @@ hr { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; }
     transition: background-color 0.3s, color 0.3s, transform 0.2s;
     box-shadow: 0 1px 3px var(--shadow-color);
 }
-#theme-toggle-btn:hover, #sound-toggle-btn:hover {
-    background-color: var(--section-bg-alt);
-    color: var(--text-color);
-}
-#theme-toggle-btn:active, #sound-toggle-btn:active {
-    transform: scale(0.95);
-}
+#theme-toggle-btn:hover, #sound-toggle-btn:hover { background-color: var(--section-bg-alt); color: var(--text-color); }
+#theme-toggle-btn:active, #sound-toggle-btn:active { transform: scale(0.95); }
 
-/* --- Cronômetro --- */
+/* --- Cronômetro (Altura Reduzida) --- */
 .timer-section{ padding: 5px 10px; margin-bottom: 15px; background-color: var(--section-bg); border:1px solid var(--border-color-light); border-radius:6px; text-align:center; }
 .timer-section h3{ margin: 2px 0 2px 0; font-size:.8em; color: var(--text-color-lighter); }
 #current-timer-display{ font-size:1.5em; font-weight:700; color: var(--text-color); font-family:'Courier New',Courier,monospace; display:block; margin: 0; padding: 2px 0; }
@@ -198,8 +186,8 @@ hr { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; }
 .match-wins-display .eles{color: var(--accent-eles)}
 .match-wins-display span{display:inline-block;min-width:30px}
 
-/* --- Seção Embaralhador --- */
-.dealer-section{padding: 8px 10px; margin-bottom:15px; background-color: var(--section-bg); border:1px solid var(--border-color-light); border-radius:6px}
+/* --- Seção Embaralhador (Altura Reduzida) --- */
+.dealer-section{ padding: 8px 10px; margin-bottom:15px; background-color: var(--section-bg); border:1px solid var(--border-color-light); border-radius:6px}
 .dealer-section h3{margin: 2px 0 3px 0; font-size:1em; color: var(--text-color-lighter);}
 #current-dealer-name{font-size:1.3em;font-weight:700;color: var(--text-color);min-height: 1.3em; line-height: 1.3em; margin: 0 0 5px 0;}
 #next-dealer-btn{ margin-top: 5px; padding:7px 14px; font-size:.85em; background-color: var(--text-color-lighter); color: var(--bg-color); border:1px solid var(--text-color-muted); border-bottom:3px solid var(--text-color-light); border-radius:6px; cursor:pointer; transition:background-color .2s,transform .1s ease-out,box-shadow .1s ease-out; box-shadow:0 2px 3px var(--shadow-color-darker); }
@@ -214,7 +202,7 @@ hr { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; }
 .team .score.nos{color: var(--accent-nos)}
 .team .score.eles{color: var(--accent-eles)}
 
-/* --- Controles (+/- e Truco) --- */
+/* --- Controles (+/- e Truco) - Estilo Revertido --- */
 .controls{display:flex;flex-wrap:wrap;justify-content:center;gap:8px; margin-top: 5px;}
 .controls button{ border: 1px solid var(--button-border); border-radius: 5px; padding: 8px 10px; font-size: 1.1em; cursor: pointer; min-width: 40px; transition: background-color .2s, transform .1s; user-select: none;-webkit-user-select:none;-ms-user-select:none; background-color: var(--button-bg); color: var(--button-text); border-bottom: 1px solid var(--button-border); box-shadow: none; }
 .controls button:hover{ background-color: var(--button-hover-bg); }
@@ -244,7 +232,21 @@ hr { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; }
 .history-score .nos{color: var(--accent-nos)}
 .history-score .eles{color: var(--accent-eles)}
 
-/* --- Histórico de Duração das Partidas --- */
+/* --- Botões de Ação (Reset / Editar Nomes) --- */
+.action-buttons{margin-top:25px;padding-top:15px;border-top:1px solid var(--border-color);display:flex;flex-direction:column;align-items:center;gap:12px}
+.action-buttons button{ padding: 11px 20px; font-size: 0.95em; font-weight: bold; border-radius: 6px; cursor: pointer; border-style: solid; border-width: 1px; border-bottom-width: 3px; transition: background-color .2s, transform .1s ease-out, box-shadow .1s ease-out; width: 80%; max-width: 280px; color: var(--button-action-text); box-shadow: 0 2px 4px var(--shadow-color-darker); }
+.action-buttons button:active{ transform: translateY(2px); border-bottom-width: 1px; box-shadow: 0 1px 2px var(--shadow-color-darkest); }
+#edit-teams-btn { background-color: var(--button-edit-bg); border-color: var(--button-edit-border); border-bottom-color: var(--button-edit-border-bottom);}
+#edit-teams-btn:hover { background-color: var(--button-edit-hover); }
+#edit-teams-btn:active { background-color: var(--button-edit-active); }
+.reset-game-button{ background-color: var(--button-reset-game-bg); border-color: var(--button-reset-game-border); border-bottom-color: var(--button-reset-game-border-bottom);}
+.reset-game-button:hover{ background-color: var(--button-reset-game-hover); }
+.reset-game-button:active{ background-color: var(--button-reset-game-active); }
+.reset-all-button{ background-color: var(--button-reset-all-bg); border-color: var(--button-reset-all-border); border-bottom-color: var(--button-reset-all-border-bottom);}
+.reset-all-button:hover{ background-color: var(--button-reset-all-hover); }
+.reset-all-button:active{ background-color: var(--button-reset-all-active); }
+
+/* --- Histórico de Duração das Partidas (Movido para o final) --- */
  .duration-history-section {
      margin-top: 20px; /* Espaço antes do histórico */
      margin-bottom: 20px; /* Espaço antes dos créditos */
@@ -273,20 +275,6 @@ hr { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; }
  .winner-icon.nos { color: var(--accent-nos); }
  .winner-icon.eles { color: var(--accent-eles); }
 
-
-/* --- Botões de Ação (Reset / Editar Nomes) --- */
-.action-buttons{margin-top:25px;padding-top:15px;border-top:1px solid var(--border-color);display:flex;flex-direction:column;align-items:center;gap:12px}
-.action-buttons button{ padding: 11px 20px; font-size: 0.95em; font-weight: bold; border-radius: 6px; cursor: pointer; border-style: solid; border-width: 1px; border-bottom-width: 3px; transition: background-color .2s, transform .1s ease-out, box-shadow .1s ease-out; width: 80%; max-width: 280px; color: var(--button-action-text); box-shadow: 0 2px 4px var(--shadow-color-darker); }
-.action-buttons button:active{ transform: translateY(2px); border-bottom-width: 1px; box-shadow: 0 1px 2px var(--shadow-color-darkest); }
-#edit-teams-btn { background-color: var(--button-edit-bg); border-color: var(--button-edit-border); border-bottom-color: var(--button-edit-border-bottom);}
-#edit-teams-btn:hover { background-color: var(--button-edit-hover); }
-#edit-teams-btn:active { background-color: var(--button-edit-active); }
-.reset-game-button{ background-color: var(--button-reset-game-bg); border-color: var(--button-reset-game-border); border-bottom-color: var(--button-reset-game-border-bottom);}
-.reset-game-button:hover{ background-color: var(--button-reset-game-hover); }
-.reset-game-button:active{ background-color: var(--button-reset-game-active); }
-.reset-all-button{ background-color: var(--button-reset-all-bg); border-color: var(--button-reset-all-border); border-bottom-color: var(--button-reset-all-border-bottom);}
-.reset-all-button:hover{ background-color: var(--button-reset-all-hover); }
-.reset-all-button:active{ background-color: var(--button-reset-all-active); }
 
 /* --- Estilo do Footer de Crédito --- */
 .footer-credit {
