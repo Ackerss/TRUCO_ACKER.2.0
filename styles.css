@@ -266,7 +266,7 @@ hr { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; }
      align-items: center;
  }
  #duration-history-list li:last-child { border-bottom: none; }
- /* Ícone de Vencedor no Histórico */
+ /* Ícone de Vencedor no Histórico (Troféu) */
  .winner-icon {
      font-size: 1.1em; /* Tamanho do ícone */
      margin-left: 8px; /* Espaço antes do ícone */
