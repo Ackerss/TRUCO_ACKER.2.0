@@ -5,28 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#222222" id="theme-color-meta">
     <title>Marcador Truco Pro</title>
-
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
-
     <link rel="stylesheet" href="styles.css">
-
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').then(registration => {
-                    console.log('SW registrado:', registration.scope);
-                }, function(err) {
-                    console.log('Falha no registro do SW:', err);
-                });
-            });
-        }
-    </script>
+    <script> if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').then(reg => console.log('SW registrado:', reg.scope), err => console.log('Falha SW:', err)); }); } </script>
 </head>
 <body class="dark-theme">
 
 <div class="scoreboard">
-    <button id="theme-toggle-btn" title="Alternar Tema">☀️</button>
+    <div class="top-config-buttons">
+        <button id="sound-toggle-btn" title="Alternar Som">🔊</button>
+        <button id="theme-toggle-btn" title="Alternar Tema">☀️</button>
+    </div>
 
     <h1>Marcador de Truco</h1>
 
@@ -48,7 +38,9 @@
         <button id="next-dealer-btn">Próximo Embaralhador</button>
     </div>
 
-    <hr> <div class="teams">
+    <hr>
+
+    <div class="teams">
         <div class="team">
             <h2 id="team-name-nos">Nós</h2>
             <div id="score-nos" class="score nos">0</div>
@@ -79,11 +71,19 @@
          <button id="undo-button" disabled>Desfazer Última Ação</button>
     </div>
 
-    <hr> <div class="history-section">
+    <hr>
+
+    <div class="history-section">
         <h3>Placar Anterior (Jogo Atual)</h3>
         <div class="history-score">
             <span id="prev-score-nos" class="nos">-</span> a <span id="prev-score-eles" class="eles">-</span>
         </div>
+    </div>
+
+    <div class="action-buttons">
+        <button id="edit-teams-btn">Editar Nomes das Equipes</button>
+        <button class="reset-game-button" id="reset-game-btn">Reiniciar Jogo Atual (0-12)</button>
+        <button class="reset-all-button" id="reset-all-btn">Zerar Placar Geral</button>
     </div>
 
     <div class="duration-history-section">
@@ -91,12 +91,6 @@
         <ul id="duration-history-list">
             <li>Carregando histórico...</li>
         </ul>
-    </div>
-
-    <div class="action-buttons">
-        <button id="edit-teams-btn">Editar Nomes das Equipes</button>
-        <button class="reset-game-button" id="reset-game-btn">Reiniciar Jogo Atual (0-12)</button>
-        <button class="reset-all-button" id="reset-all-btn">Zerar Placar Geral</button>
     </div>
 
     <div class="footer-credit">
