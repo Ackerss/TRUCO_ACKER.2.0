@@ -9,7 +9,7 @@
     --text-color: #e0e0e0;
     --text-color-light: #c0c0c0;
     --text-color-lighter: #b0b0b0;
-    --text-color-muted: #ddd; /* Cor dos créditos aumentada */
+    --text-color-muted: #ddd;
     --title-color: #ffffff;
     --border-color: #444;
     --border-color-light: #555;
@@ -39,7 +39,7 @@
     --button-truco-text: #91d5ff;
     --button-truco-border: #4a8ab3;
     --button-truco-border-bottom: #2a4a66;
-    --button-action-text: #1f1f1f; /* Texto escuro para botões coloridos */
+    --button-action-text: #1f1f1f;
     --button-edit-bg: #96f2d7;
     --button-edit-hover: #a3f5e0;
     --button-edit-active: #75e0c1;
@@ -78,7 +78,7 @@ body.light-theme {
     --text-color: #212529;
     --text-color-light: #495057;
     --text-color-lighter: #6c757d;
-    --text-color-muted: #6c757d; /* Cor dos créditos aumentada */
+    --text-color-muted: #6c757d;
     --title-color: #000000;
     --border-color: #dee2e6;
     --border-color-light: #ced4da;
@@ -139,61 +139,36 @@ body.light-theme {
 
 /* --- Estilos Gerais --- */
 body {
-    font-family: sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 0;
-    padding: 15px;
-    box-sizing: border-box;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: sans-serif; display: flex; justify-content: center; align-items: flex-start;
+    min-height: 100vh; background-color: var(--bg-color); color: var(--text-color);
+    margin: 0; padding: 15px; box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease;
 }
 .scoreboard {
-    background-color: var(--scoreboard-bg);
-    padding: 15px 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px var(--shadow-color-darker);
-    text-align: center;
-    width: 100%;
-    max-width: 500px;
-    box-sizing: border-box;
-    border: 1px solid var(--border-color);
-    position: relative; /* Para posicionar o botão de tema */
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    background-color: var(--scoreboard-bg); padding: 15px 20px; border-radius: 12px;
+    box-shadow: 0 4px 15px var(--shadow-color-darker); text-align: center; width: 100%;
+    max-width: 500px; box-sizing: border-box; border: 1px solid var(--border-color);
+    position: relative; transition: background-color 0.3s ease, border-color 0.3s ease;
 }
-h1 {
-    color: var(--title-color);
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 1.6em;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px var(--shadow-color-darkest);
-}
-h2, h3, h4 {
-    color: var(--text-color-light);
-    font-weight: normal;
-}
-hr {
-    border: none;
-    border-top: 1px solid var(--border-color);
-    margin: 20px 0;
-}
+h1 { color: var(--title-color); margin-top: 0; margin-bottom: 15px; font-size: 1.6em; font-weight: bold; text-shadow: 1px 1px 2px var(--shadow-color-darkest); }
+h2, h3, h4 { color: var(--text-color-light); font-weight: normal; }
+hr { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; }
 
-/* --- Botão de Tema --- */
-#theme-toggle-btn {
+/* --- Botões de Configuração no Topo --- */
+.top-config-buttons {
     position: absolute;
     top: 10px;
     right: 10px;
+    display: flex;
+    gap: 8px; /* Espaço entre botões */
+}
+#theme-toggle-btn, #sound-toggle-btn {
     background: var(--section-bg);
     color: var(--text-color-lighter);
     border: 1px solid var(--border-color-light);
     border-radius: 50%;
     width: 35px;
     height: 35px;
-    font-size: 1.2em;
+    font-size: 1.2em; /* Ajuste o tamanho do ícone se necessário */
     cursor: pointer;
     display: flex;
     justify-content: center;
@@ -202,37 +177,18 @@ hr {
     transition: background-color 0.3s, color 0.3s, transform 0.2s;
     box-shadow: 0 1px 3px var(--shadow-color);
 }
-#theme-toggle-btn:hover {
+#theme-toggle-btn:hover, #sound-toggle-btn:hover {
     background-color: var(--section-bg-alt);
     color: var(--text-color);
 }
-#theme-toggle-btn:active {
+#theme-toggle-btn:active, #sound-toggle-btn:active {
     transform: scale(0.95);
 }
 
-/* --- Cronômetro (Altura Reduzida) --- */
-.timer-section{
-    padding: 5px 10px; /* Padding vertical reduzido */
-    margin-bottom: 15px;
-    background-color: var(--section-bg);
-    border:1px solid var(--border-color-light);
-    border-radius:6px;
-    text-align:center;
-}
- .timer-section h3{
-     margin: 2px 0 2px 0; /* Margem vertical reduzida */
-     font-size:.8em;
-     color: var(--text-color-lighter);
- }
- #current-timer-display{
-     font-size:1.5em;
-     font-weight:700;
-     color: var(--text-color);
-     font-family:'Courier New',Courier,monospace;
-     display:block;
-     margin: 0; /* Remove margem do parágrafo */
-     padding: 2px 0; /* Pequeno padding interno */
- }
+/* --- Cronômetro --- */
+.timer-section{ padding: 5px 10px; margin-bottom: 15px; background-color: var(--section-bg); border:1px solid var(--border-color-light); border-radius:6px; text-align:center; }
+.timer-section h3{ margin: 2px 0 2px 0; font-size:.8em; color: var(--text-color-lighter); }
+#current-timer-display{ font-size:1.5em; font-weight:700; color: var(--text-color); font-family:'Courier New',Courier,monospace; display:block; margin: 0; padding: 2px 0; }
 
 /* --- Seção Partidas Ganhas --- */
 .match-wins-section{background-color: var(--section-bg-alt);padding:10px;border-radius:6px;margin-bottom:15px;border:1px solid var(--border-color-light)}
@@ -242,37 +198,11 @@ hr {
 .match-wins-display .eles{color: var(--accent-eles)}
 .match-wins-display span{display:inline-block;min-width:30px}
 
-/* --- Seção Embaralhador (Altura Reduzida) --- */
-.dealer-section{
-    padding: 8px 10px; /* Padding vertical reduzido */
-    margin-bottom:15px;
-    background-color: var(--section-bg);
-    border:1px solid var(--border-color-light);
-    border-radius:6px;
-}
-.dealer-section h3{
-    margin: 2px 0 3px 0; /* Margem vertical reduzida */
-    font-size:1em;
-    color: var(--text-color-lighter);
-}
-#current-dealer-name{
-    font-size:1.3em;
-    font-weight:700;
-    color: var(--text-color);
-    min-height: 1.3em; /* Altura mínima baseada no font-size */
-    line-height: 1.3em; /* Alinha verticalmente */
-    margin: 0 0 5px 0; /* Margem inferior reduzida */
-}
-#next-dealer-btn{
-    margin-top: 5px; /* Margem superior reduzida */
-    padding:7px 14px;
-    font-size:.85em;
-    background-color: var(--text-color-lighter); color: var(--bg-color); /* Cores invertidas */
-    border:1px solid var(--text-color-muted); border-bottom:3px solid var(--text-color-light);
-    border-radius:6px; cursor:pointer;
-    transition:background-color .2s,transform .1s ease-out,box-shadow .1s ease-out;
-    box-shadow:0 2px 3px var(--shadow-color-darker);
-}
+/* --- Seção Embaralhador --- */
+.dealer-section{padding: 8px 10px; margin-bottom:15px; background-color: var(--section-bg); border:1px solid var(--border-color-light); border-radius:6px}
+.dealer-section h3{margin: 2px 0 3px 0; font-size:1em; color: var(--text-color-lighter);}
+#current-dealer-name{font-size:1.3em;font-weight:700;color: var(--text-color);min-height: 1.3em; line-height: 1.3em; margin: 0 0 5px 0;}
+#next-dealer-btn{ margin-top: 5px; padding:7px 14px; font-size:.85em; background-color: var(--text-color-lighter); color: var(--bg-color); border:1px solid var(--text-color-muted); border-bottom:3px solid var(--text-color-light); border-radius:6px; cursor:pointer; transition:background-color .2s,transform .1s ease-out,box-shadow .1s ease-out; box-shadow:0 2px 3px var(--shadow-color-darker); }
 #next-dealer-btn:hover{background-color: var(--text-color-light);}
 #next-dealer-btn:active{background-color: var(--text-color-muted);transform:translateY(2px);border-bottom-width:1px;box-shadow:0 1px 2px var(--shadow-color-darkest);}
 
@@ -284,15 +214,9 @@ hr {
 .team .score.nos{color: var(--accent-nos)}
 .team .score.eles{color: var(--accent-eles)}
 
-/* --- Controles (+/- e Truco) - Estilo Revertido --- */
+/* --- Controles (+/- e Truco) --- */
 .controls{display:flex;flex-wrap:wrap;justify-content:center;gap:8px; margin-top: 5px;}
-.controls button{
-    border: 1px solid var(--button-border); border-radius: 5px; padding: 8px 10px; font-size: 1.1em;
-    cursor: pointer; min-width: 40px; transition: background-color .2s, transform .1s;
-    user-select: none;-webkit-user-select:none;-ms-user-select:none;
-    background-color: var(--button-bg); color: var(--button-text);
-    border-bottom: 1px solid var(--button-border); box-shadow: none;
-}
+.controls button{ border: 1px solid var(--button-border); border-radius: 5px; padding: 8px 10px; font-size: 1.1em; cursor: pointer; min-width: 40px; transition: background-color .2s, transform .1s; user-select: none;-webkit-user-select:none;-ms-user-select:none; background-color: var(--button-bg); color: var(--button-text); border-bottom: 1px solid var(--button-border); box-shadow: none; }
 .controls button:hover{ background-color: var(--button-hover-bg); }
 .controls button:active{ background-color: var(--button-active-bg); transform: scale(.97); }
 .controls .add{color: var(--button-add-text);border-color: var(--button-add-border);background-color: var(--button-add-bg); border-bottom-color: var(--button-add-border-bottom);}
@@ -307,12 +231,7 @@ hr {
 
 /* --- Botão Desfazer --- */
 .undo-section { text-align: center; margin-top: 15px; margin-bottom: 20px; }
-#undo-button {
-    padding: 9px 18px; font-size: 0.9em; font-weight: bold; border-radius: 6px;
-    cursor: pointer; border: 1px solid var(--button-undo-border); border-bottom: 3px solid var(--button-undo-border-bottom);
-    transition: background-color .2s, transform .1s ease-out, box-shadow .1s ease-out;
-    background-color: var(--button-undo-bg); color: var(--button-action-text); box-shadow: 0 2px 3px var(--shadow-color-darker);
-}
+#undo-button { padding: 9px 18px; font-size: 0.9em; font-weight: bold; border-radius: 6px; cursor: pointer; border: 1px solid var(--button-undo-border); border-bottom: 3px solid var(--button-undo-border-bottom); transition: background-color .2s, transform .1s ease-out, box-shadow .1s ease-out; background-color: var(--button-undo-bg); color: var(--button-action-text); box-shadow: 0 2px 3px var(--shadow-color-darker); }
 #undo-button:hover { background-color: var(--button-undo-hover); }
 #undo-button:active { background-color: var(--button-undo-active); transform: translateY(2px); border-bottom-width: 1px; box-shadow: 0 1px 2px var(--shadow-color-darkest); }
 #undo-button:disabled { background-color: var(--button-disabled-bg); color: var(--button-disabled-text); border: 1px solid var(--button-disabled-border); border-bottom: 1px solid var(--button-disabled-border); cursor: not-allowed; opacity: 0.7; box-shadow: none; transform: none; }
@@ -326,20 +245,38 @@ hr {
 .history-score .eles{color: var(--accent-eles)}
 
 /* --- Histórico de Duração das Partidas --- */
- .duration-history-section { margin-top: 20px; padding: 15px; background-color: var(--section-bg-hist); border: 1px solid var(--border-color); border-radius: 6px; text-align: left; }
+ .duration-history-section {
+     margin-top: 20px; /* Espaço antes do histórico */
+     margin-bottom: 20px; /* Espaço antes dos créditos */
+     padding: 15px;
+     background-color: var(--section-bg-hist);
+     border: 1px solid var(--border-color);
+     border-radius: 6px;
+     text-align: left;
+ }
  .duration-history-section h4 { margin-top: 0; margin-bottom: 10px; font-size: 0.95em; color: var(--text-color-light); text-align: center; }
  #duration-history-list { list-style: none; padding: 0; margin: 0; max-height: 120px; overflow-y: auto; font-size: 0.9em; color: var(--text-color-light); font-family: 'Courier New', Courier, monospace; }
- #duration-history-list li { padding: 3px 5px; border-bottom: 1px dashed var(--border-color-light); }
+ #duration-history-list li {
+     padding: 3px 5px;
+     border-bottom: 1px dashed var(--border-color-light);
+     display: flex; /* Para alinhar ícone e texto */
+     justify-content: space-between; /* Coloca ícone na direita */
+     align-items: center;
+ }
  #duration-history-list li:last-child { border-bottom: none; }
+ /* Ícone de Vencedor no Histórico */
+ .winner-icon {
+     font-size: 1.1em; /* Tamanho do ícone */
+     margin-left: 8px; /* Espaço antes do ícone */
+     font-style: normal; /* Garante que não fique itálico */
+ }
+ .winner-icon.nos { color: var(--accent-nos); }
+ .winner-icon.eles { color: var(--accent-eles); }
+
 
 /* --- Botões de Ação (Reset / Editar Nomes) --- */
 .action-buttons{margin-top:25px;padding-top:15px;border-top:1px solid var(--border-color);display:flex;flex-direction:column;align-items:center;gap:12px}
-.action-buttons button{
-    padding: 11px 20px; font-size: 0.95em; font-weight: bold; border-radius: 6px;
-    cursor: pointer; border-style: solid; border-width: 1px; border-bottom-width: 3px;
-    transition: background-color .2s, transform .1s ease-out, box-shadow .1s ease-out;
-    width: 80%; max-width: 280px; color: var(--button-action-text); box-shadow: 0 2px 4px var(--shadow-color-darker);
-}
+.action-buttons button{ padding: 11px 20px; font-size: 0.95em; font-weight: bold; border-radius: 6px; cursor: pointer; border-style: solid; border-width: 1px; border-bottom-width: 3px; transition: background-color .2s, transform .1s ease-out, box-shadow .1s ease-out; width: 80%; max-width: 280px; color: var(--button-action-text); box-shadow: 0 2px 4px var(--shadow-color-darker); }
 .action-buttons button:active{ transform: translateY(2px); border-bottom-width: 1px; box-shadow: 0 1px 2px var(--shadow-color-darkest); }
 #edit-teams-btn { background-color: var(--button-edit-bg); border-color: var(--button-edit-border); border-bottom-color: var(--button-edit-border-bottom);}
 #edit-teams-btn:hover { background-color: var(--button-edit-hover); }
@@ -353,11 +290,11 @@ hr {
 
 /* --- Estilo do Footer de Crédito --- */
 .footer-credit {
-    margin-top: 20px; /* Margem ajustada */
+    margin-top: 20px;
     padding-top: 15px;
     border-top: 1px solid var(--border-color);
-    font-size: 0.8em; /* Tamanho ajustado */
-    color: var(--text-color-muted); /* Cor ajustada */
+    font-size: 0.8em;
+    color: var(--text-color-muted); /* Usa variável */
     text-align: center;
 }
 .footer-credit p { margin: 0; padding: 0; }
