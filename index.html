@@ -10,9 +10,7 @@
     <link rel="stylesheet" href="styles.css">
     <script> if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').then(reg => console.log('SW registrado:', reg.scope), err => console.log('Falha SW:', err)); }); } </script>
 </head>
-<body class="dark-theme">
-
-<div class="scoreboard">
+<body class="dark-theme"> <div class="scoreboard">
     <div class="top-config-buttons">
         <button id="theme-toggle-btn" title="Alternar Tema">☀️</button>
         <button id="sound-toggle-btn" title="Alternar Som">🔊</button>
@@ -38,9 +36,7 @@
         <button id="next-dealer-btn">Próximo Embaralhador</button>
     </div>
 
-    <hr>
-
-    <div class="teams">
+    <hr> <div class="teams">
         <div class="team">
             <h2 id="team-name-nos">Nós</h2>
             <div id="score-nos" class="score nos">0</div>
@@ -71,9 +67,7 @@
          <button id="undo-button" disabled>Desfazer Última Ação</button>
     </div>
 
-    <hr>
-
-    <div class="history-section">
+    <hr> <div class="history-section">
         <h3>Placar Anterior (Jogo Atual)</h3>
         <div class="history-score">
             <span id="prev-score-nos" class="nos">-</span> a <span id="prev-score-eles" class="eles">-</span>
