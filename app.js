@@ -12,9 +12,9 @@ let matchDurationHistory = []; // Guarda objetos: { duration: ms, winner: 'nos' 
 let undoState = null;
 let teamNameNos = "Nós";
 let teamNameEles = "Eles";
-let currentTheme = 'dark';
+let currentTheme = 'dark'; // Padrão inicial definido aqui
 let wakeLock = null;
-let isSoundOn = true; // Controle de som
+let isSoundOn = true; // Padrão inicial definido aqui
 
 // --- Constantes Chaves localStorage ---
 const STORAGE_KEYS = {
@@ -36,9 +36,10 @@ let scoreNosElement, scoreElesElement, prevScoreNosElement, prevScoreElesElement
 // --- Funções de Armazenamento Local ---
 function saveData(key, data) { try { localStorage.setItem(key, JSON.stringify(data)); } catch (e) { console.error("Erro ao salvar:", key, e); } }
 function loadData(key, defaultValue = null) { try { const d = localStorage.getItem(key); return d ? JSON.parse(d) : defaultValue; } catch (e) { console.error("Erro ao carregar:", key, e); return defaultValue; } }
-function saveGameState() { Object.keys(STORAGE_KEYS).forEach(key => { if (key !== STORAGE_KEYS.THEME && key !== STORAGE_KEYS.SOUND_ON) { const varName = key.split('_')[1]; const value = window[varName.charAt(0).toLowerCase() + varName.slice(1)]; if (typeof value !== 'undefined') saveData(key, value); } }); }
-function loadGameState() { scoreNos = loadData(STORAGE_KEYS.SCORE_NOS, 0); scoreEles = loadData(STORAGE_KEYS.SCORE_ELES, 0); prevScoreNos = loadData(STORAGE_KEYS.PREV_SCORE_NOS, 0); prevScoreEles = loadData(STORAGE_KEYS.PREV_SCORE_ELES, 0); isInitialState = loadData(STORAGE_KEYS.IS_INITIAL, true); matchesWonNos = loadData(STORAGE_KEYS.MATCHES_NOS, 0); matchesWonEles = loadData(STORAGE_KEYS.MATCHES_ELES, 0); playerNames = loadData(STORAGE_KEYS.PLAYER_NAMES, []); currentDealerIndex = loadData(STORAGE_KEYS.DEALER_INDEX, 0); teamNameNos = loadData(STORAGE_KEYS.TEAM_NAME_NOS, "Nós"); teamNameEles = loadData(STORAGE_KEYS.TEAM_NAME_ELES, "Eles"); matchDurationHistory = loadData(STORAGE_KEYS.DURATION_HISTORY, []); const savedTheme = loadData(STORAGE_KEYS.THEME); currentTheme = savedTheme ? savedTheme : ((window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark'); isSoundOn = loadData(STORAGE_KEYS.SOUND_ON, true); }
-function clearSavedGame() { Object.values(STORAGE_KEYS).forEach(key => { if (key !== STORAGE_KEYS.THEME && key !== STORAGE_KEYS.SOUND_ON) localStorage.removeItem(key); }); }
+function saveGameState() { /* Salva estado atual do jogo, exceto tema e som */ Object.keys(STORAGE_KEYS).forEach(key => { if (key !== STORAGE_KEYS.THEME && key !== STORAGE_KEYS.SOUND_ON) { const varName = key.split('_')[1]; const value = window[varName.charAt(0).toLowerCase() + varName.slice(1)]; if (typeof value !== 'undefined') saveData(key, value); } }); }
+function loadGameSettings() { /* Carrega apenas configurações que persistem entre resets totais */ const savedTheme = loadData(STORAGE_KEYS.THEME); currentTheme = savedTheme ? savedTheme : 'dark'; const savedSound = loadData(STORAGE_KEYS.SOUND_ON); isSoundOn = savedSound !== null ? savedSound : true; }
+function loadGameData() { /* Carrega dados do jogo que são resetados */ scoreNos = loadData(STORAGE_KEYS.SCORE_NOS, 0); scoreEles = loadData(STORAGE_KEYS.SCORE_ELES, 0); prevScoreNos = loadData(STORAGE_KEYS.PREV_SCORE_NOS, 0); prevScoreEles = loadData(STORAGE_KEYS.PREV_SCORE_ELES, 0); isInitialState = loadData(STORAGE_KEYS.IS_INITIAL, true); matchesWonNos = loadData(STORAGE_KEYS.MATCHES_NOS, 0); matchesWonEles = loadData(STORAGE_KEYS.MATCHES_ELES, 0); playerNames = loadData(STORAGE_KEYS.PLAYER_NAMES, []); currentDealerIndex = loadData(STORAGE_KEYS.DEALER_INDEX, 0); teamNameNos = loadData(STORAGE_KEYS.TEAM_NAME_NOS, "Nós"); teamNameEles = loadData(STORAGE_KEYS.TEAM_NAME_ELES, "Eles"); matchDurationHistory = loadData(STORAGE_KEYS.DURATION_HISTORY, []); }
+function clearSavedGame() { /* Limpa apenas dados do jogo */ Object.values(STORAGE_KEYS).forEach(key => { if (key !== STORAGE_KEYS.THEME && key !== STORAGE_KEYS.SOUND_ON) localStorage.removeItem(key); }); }
 
 // --- Funções de Display ---
 function updateCurrentGameDisplay() { if(scoreNosElement) scoreNosElement.textContent = scoreNos; if(scoreElesElement) scoreElesElement.textContent = scoreEles; if(prevScoreNosElement) prevScoreNosElement.textContent = isInitialState ? '-' : prevScoreNos; if(prevScoreElesElement) prevScoreElesElement.textContent = isInitialState ? '-' : prevScoreEles; }
@@ -60,14 +61,11 @@ function updateDurationHistoryDisplay() { // Atualizada com ícone de troféu
         const formattedTime = formatTime(entry.duration);
         const listItem = document.createElement('li');
         listItem.textContent = `Partida ${i + 1}: ${formattedTime}`;
-
-        // Adiciona ícone do vencedor (Troféu)
         const winnerIcon = document.createElement('span');
         winnerIcon.classList.add('winner-icon', entry.winner);
         winnerIcon.textContent = '🏆'; // Ícone de Troféu
         winnerIcon.setAttribute('aria-label', `Vencedor: ${entry.winner === 'nos' ? teamNameNos : teamNameEles}`);
         listItem.appendChild(winnerIcon);
-
         durationHistoryListElement.appendChild(listItem);
     }
  }
@@ -76,9 +74,12 @@ function updateSoundButtonIcon() { if(soundToggleButton) soundToggleButton.textC
 
 // --- Função de Síntese de Voz ---
 function speakText(text, cancelPrevious = true) {
-    if (!isSoundOn) return; // Verifica se o som está ligado
+    if (!isSoundOn) return; // Sai se o som estiver desligado
     if ('speechSynthesis' in window) {
-        if (cancelPrevious) window.speechSynthesis.cancel();
+        // Pequeno hack para garantir que a fala anterior (se houver) seja cancelada
+        // antes de enfileirar a nova, especialmente se cancelPrevious for false
+        if (!cancelPrevious) window.speechSynthesis.cancel();
+
         const u = new SpeechSynthesisUtterance(text);
         u.lang = 'pt-BR'; u.rate = 1.0; u.pitch = 1.0;
         window.speechSynthesis.speak(u);
@@ -88,22 +89,15 @@ function speakText(text, cancelPrevious = true) {
  // --- Funções do Cronômetro ---
  function formatTime(ms) { if (ms === null || ms < 0) return "--:--"; let tS = Math.floor(ms / 1000); let h = Math.floor(tS / 3600); let m = Math.floor((tS % 3600) / 60); let s = tS % 60; m = String(m).padStart(2, '0'); s = String(s).padStart(2, '0'); return (h > 0) ? `${String(h).padStart(2, '0')}:${m}:${s}` : `${m}:${s}`; }
  function startTimer() {
-     // Garante que o timer não inicie se já estiver rodando ou se não houver tempo inicial válido
-     if (timerIntervalId !== null || gameStartTime !== null) {
-         // Se já existe um timer, limpa antes de começar um novo para evitar múltiplos intervalos
-         if (timerIntervalId) clearInterval(timerIntervalId);
-         timerIntervalId = null; // Garante que está limpo
-     }
+     if (timerIntervalId) clearInterval(timerIntervalId); // Limpa timer anterior sempre
      gameStartTime = Date.now();
      if(currentTimerElement) currentTimerElement.textContent = "00:00";
-     console.log("Timer iniciado em:", gameStartTime); // Log para depuração
+     console.log("Timer iniciado em:", gameStartTime);
      timerIntervalId = setInterval(() => {
          if (gameStartTime && currentTimerElement) {
              currentTimerElement.textContent = formatTime(Date.now() - gameStartTime);
          } else {
-             console.warn("Limpando intervalo do timer - gameStartTime nulo?");
-             clearInterval(timerIntervalId);
-             timerIntervalId = null;
+             clearInterval(timerIntervalId); timerIntervalId = null;
          }
      }, 1000);
      requestWakeLock();
@@ -112,9 +106,9 @@ function speakText(text, cancelPrevious = true) {
  function resetCurrentTimerDisplay() { if (timerIntervalId) clearInterval(timerIntervalId); timerIntervalId = null; gameStartTime = null; if(currentTimerElement) currentTimerElement.textContent = "00:00"; releaseWakeLock(); console.log("Display do timer resetado.");}
 
  // --- Funções Wake Lock API ---
- async function requestWakeLock() { if ('wakeLock' in navigator) { try { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { console.log('Wake Lock liberado.'); wakeLock = null; }); console.log('Wake Lock ativo.'); } catch (err) { console.error(`Wake Lock falhou: ${err.name}, ${err.message}`); wakeLock = null; } } else console.warn('Wake Lock API não suportada.'); }
- async function releaseWakeLock() { if (wakeLock !== null) { try { await wakeLock.release(); wakeLock = null; } catch(err) { console.error("Erro ao liberar Wake Lock:", err); wakeLock = null; } } }
- document.addEventListener('visibilitychange', async () => { if (wakeLock !== null && document.visibilityState === 'hidden') { await releaseWakeLock(); } else if (document.visibilityState === 'visible' && gameStartTime) { await requestWakeLock(); } });
+ async function requestWakeLock() { if ('wakeLock' in navigator) { try { if(wakeLock === null) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); console.log('Wake Lock ativo.'); } } catch (err) { console.error(`Wake Lock falhou: ${err.name}, ${err.message}`); wakeLock = null; } } else console.warn('Wake Lock API não suportada.'); }
+ async function releaseWakeLock() { if (wakeLock !== null) { try { await wakeLock.release(); wakeLock = null; console.log('Wake Lock liberado (manual/fim).'); } catch(err) { console.error("Erro ao liberar Wake Lock:", err); wakeLock = null; } } }
+ document.addEventListener('visibilitychange', async () => { if (wakeLock !== null && document.visibilityState === 'hidden') { console.log("Aba inativa, liberando WL"); await releaseWakeLock(); } else if (document.visibilityState === 'visible' && gameStartTime) { console.log("Aba ativa, requisitando WL"); await requestWakeLock(); } });
 
  // --- Função para pegar Nomes dos Jogadores ---
  function getPlayerNames() { playerNames = []; alert("Vamos definir os jogadores..."); for (let i = 1; i <= 4; i++) { let n = prompt(`Jogador ${i}:`); while (!n?.trim()) { alert("Nome inválido..."); n = prompt(`Jogador ${i}:`); } playerNames.push(n.trim()); } currentDealerIndex = 0; saveData(STORAGE_KEYS.PLAYER_NAMES, playerNames); saveData(STORAGE_KEYS.DEALER_INDEX, currentDealerIndex); updateDealerDisplay(); speakText(`Iniciando. Embaralhador: ${playerNames[0]}`); startTimer(); }
@@ -143,18 +137,18 @@ function changeScore(team, amount) {
 
     updateCurrentGameDisplay();
 
-    // --- ALTERAÇÃO: Só avança o dealer e fala se pontos foram ADICIONADOS ---
+    // --- SÓ AVANÇA DEALER SE amount > 0 ---
     if (amount > 0) {
         const dealerAdvanced = advanceDealer(false); // Avança dealer silenciosamente
         // Fala nome do novo dealer APÓS delay (se avançou e nomes existem)
         if (dealerAdvanced && playerNames.length === 4) {
              setTimeout(() => {
-                 // true = cancela falas anteriores (como a do ponto)
+                 // true = cancela falas anteriores (como a do ponto que acabou de ser dita)
                  speakText(`Embaralhador: ${playerNames[currentDealerIndex]}`, true);
-             }, 750);
+             }, 750); // Delay aumentado
         }
-    } // Se amount for -1, não faz nada com o dealer e não fala nome do dealer
-    // -----------------------------------------------------------------------
+    }
+    // ---------------------------------------
 
     if (winner) { processMatchEnd(winner); }
 
@@ -198,7 +192,7 @@ function toggleTheme() { setTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
 
 // --- Lógica de Som ---
 function setSound(soundOn) { isSoundOn = soundOn; saveData(STORAGE_KEYS.SOUND_ON, isSoundOn); updateSoundButtonIcon(); }
-function toggleSound() { setSound(!isSoundOn); if (isSoundOn) speakText("Som ativado", true); else if ('speechSynthesis' in window) window.speechSynthesis.cancel(); /* Cancela falas se desligar */ }
+function toggleSound() { setSound(!isSoundOn); if (isSoundOn) speakText("Som ativado", true); else if ('speechSynthesis' in window) window.speechSynthesis.cancel(); }
 
 // --- Adiciona Event Listeners ---
 function addEventListeners() {
@@ -213,7 +207,8 @@ function addEventListeners() {
                 if (changeScore(team, amount)) {
                     // ...e houver texto para falar (NÃO é o botão -1)...
                     if (speak) {
-                        speakText(speak, false); // false = NÃO cancela falas anteriores (permite dealer falar depois)
+                        // false = NÃO cancela falas anteriores (permite dealer falar depois)
+                        speakText(speak, false);
                     }
                 }
             }
@@ -248,9 +243,17 @@ function initializeApp() {
     bodyElement = document.body;
     themeMeta = document.getElementById('theme-color-meta');
 
-    loadGameState(); // Carrega dados salvos
-    setTheme(currentTheme); // Aplica tema
-    setSound(isSoundOn); // Aplica pref. de som e atualiza ícone
+    // Define padrões iniciais ANTES de carregar o salvo (serão sobrescritos se houver algo salvo)
+    currentTheme = 'dark';
+    isSoundOn = true;
+    // Carrega configurações salvas (tema, som) que podem sobrescrever os padrões
+    loadGameSettings();
+    // Carrega dados do jogo salvos
+    loadGameData();
+
+    // Aplica configurações carregadas/padrão
+    setTheme(currentTheme);
+    setSound(isSoundOn);
 
     // Atualiza displays
     updateCurrentGameDisplay();
@@ -266,8 +269,9 @@ function initializeApp() {
     if (playerNames.length !== 4) {
          setTimeout(getPlayerNames, 300);
     } else {
-        resetCurrentTimerDisplay(); // Reseta timer ao carregar
-        startTimer();
+        // Se tem nomes, apenas reseta o display do timer, não inicia automaticamente
+        // O timer só começa quando um ponto é marcado ou o jogo é resetado
+        resetCurrentTimerDisplay();
     }
 }
 
